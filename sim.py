@@ -4,6 +4,7 @@ from kivy.graphics import (Color, Ellipse, Rectangle, Line)
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.textinput import TextInput
+from kivy.clock import Clock
 
 from parser import *
 
@@ -17,6 +18,7 @@ from parser import *
 class PainterWidget(Widget):
     def __init__(self, **kwargs):
         super(PainterWidget, self).__init__(**kwargs)
+        # self.Parcer = Parser("s_11zzz1.cli")
         self.Parcer = Parser("s_11zzz1_ex.cli")
         self.Parcer.Run()
         self.all_layers = self.Parcer.parced_layers
@@ -53,35 +55,54 @@ class PaintApp(App):
         parent = Widget()
         self.painter = PainterWidget()
         self.l_n=1
-        txt1 = TextInput(multiline=False, font_size=50, size = (300,100))
+        self.txt1 = TextInput(multiline=False, font_size=40, size = (300,100))
 
-        parent.add_widget(txt1)
+        parent.add_widget(self.txt1)
         parent.add_widget(self.painter)
         parent.add_widget(Button(text = 'Clear', on_press = self.clear_canvas, size = (100,50)))
         parent.add_widget(Button(text = 'Save', on_press = self.save, size = (100,50), pos = (100,0)))
         parent.add_widget(Button(text = 'Screen', on_press = self.screen, size = (100,50), pos = (200,0)))
-        parent.add_widget(Button(text = '+', on_press = self.lnP, size = (100,50), pos = (0,100)))
-        parent.add_widget(Button(text = '-', on_press = self.lnM, size = (100,50), pos = (100,100)))
+        parent.add_widget(Button(text = '+', on_press = self.lnP,on_release = self.stopupdate, size = (100,50), pos = (0,100)))
+        parent.add_widget(Button(text = '-', on_press = self.lnM,on_release = self.stopupdate, size = (100,50), pos = (100,100)))
         self.painter.PrintLayer(str(self.l_n))
+        self.txt1.text = ('Layer: ' + str(self.l_n))
 
         return  parent
 
     def lnP(self,instance):
+        self.event = Clock.schedule_interval(self.plus, 0.1)
         if(self.l_n<self.painter.numofl):
             self.l_n += 1
             self.paintLayer()
             print(self.l_n)
+            self.txt1.text = ('Layer: '+str(self.l_n))
             # Line(points=(50, 100, 150, 200, 200, 100),  width=5)
+    def plus(self,inst):
+        if (self.l_n < self.painter.numofl):
+            self.l_n += 1
+            self.paintLayer()
+            self.txt1.text = ('Layer: ' + str(self.l_n))
 
-    def lnM(self,instance):
+    def minus(self,inst):
         if self.l_n > 1:
             self.l_n -= 1
             self.paintLayer()
+            self.txt1.text = ('Layer: ' + str(self.l_n))
+
+    def lnM(self,instance):
+        self.event = Clock.schedule_interval(self.minus, 0.1)
+        if self.l_n > 1:
+            self.l_n -= 1
+            self.paintLayer()
+            self.txt1.text = ('Layer: '+str(self.l_n))
         print(self.l_n)
 
     def paintLayer(self):
         self.clear_canvas('')
         self.painter.PrintLayer(str(self.l_n))
+
+    def stopupdate(self,instance):
+        self.event.cancel()
 
 
 

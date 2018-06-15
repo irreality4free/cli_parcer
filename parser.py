@@ -12,10 +12,9 @@ class Parser:
         self.layers = dict()
 
     def Open(self):
-        with open(self.name, "r", encoding='cp866') as  f:
+        with open(self.name, "rb") as  f:
             self.s = f.read()
-            self.s = self.s.split("$$HEADEREND")[1]
-            self.s = self.s.encode('cp866')
+            self.s = self.s.split(b"$$HEADEREND")[1]
 
     def get_command(self,s):
 
@@ -28,7 +27,7 @@ class Parser:
             self.layer += 1
             self.layers[str(self.layer)] = list()
             print(str(self.layer) + ' layer num')
-            z = unpack("H", s[:2])
+            z = unpack("H", s[:2])[0]
             s = s[2:]
             element = 0
             print("Start layer (128) %s" % z)
@@ -50,11 +49,52 @@ class Parser:
                 coord_list.append(x_scaled)
                 coord_list.append(y_scaled)
 
-                print(x_scaled, y_scaled)
+                # print(x_scaled, y_scaled)
+                print(x, y)
             print()
             self.layers[str(self.layer)].append(coord_list)
             self.element += 1
         else:
+            print ("Bad command found! c = %s"%c)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            i = unpack("H", s[:2])
+            s = s[2:]
+            print(i) # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+            # i = unpack("H", s[:2])
+            # s = s[2:]
+            # print(i)
+
+
+
+
 
             return ""
         return s
