@@ -63,9 +63,13 @@ class Parser:
         self.Open()
         while len(self.s) > 0:
             self.s = self.get_command(self.s)
+
+        self.parced_layers = self.layers
         print(self.layers['1'])
 
 
-par = Parser("s_11zzz1_ex.cli")
-par.Run()
+if __name__ == '__main__':
+
+    par = Parser("s_11zzz1_ex.cli")
+    par.Run()
 
